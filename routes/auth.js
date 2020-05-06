@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator/check');
+const { check, validationResult } = require('express-validator');
 const config = require('config');
 const auth = require('../middleware/auth');
 
@@ -16,7 +16,7 @@ const User = require('../models/User');
 router.get('/', auth, async (req, res) => {
   try {
     // req.user.id was set from the auth middleware to be the token
-    // we append .select method to not return the password
+    // we append .select with argument <-argument> to not return the password
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
   } catch (err) {
