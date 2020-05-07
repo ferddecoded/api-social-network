@@ -1,6 +1,0 @@
-{
-  "mongoURI": "mongodb+srv://ferd123:ferd123@devconnector-ole1c.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtSecret": "mysecrettoken",
-  "githubClientId": "6fac70fe896edc964416",
-  "githubSecret": "a2b14697c6dc6385e76798d2977a19b7c6094462"
-}
