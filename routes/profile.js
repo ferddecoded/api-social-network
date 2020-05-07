@@ -1,5 +1,7 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
+const request = require('request');
+const config = require('config');
 const auth = require('../middleware/auth.js');
 
 const router = express.Router();
@@ -10,7 +12,7 @@ const User = require('../models/User');
 // @route   GET /profile/me
 // @desc    Get current users profile
 // @access  Private
-// private because we are getting the profile by token
+// private because we are getting the profile by token, using auth middleware
 router.get('/me', auth, async (req, res) => {
   try {
     // user property pertains to the user field in Profile schema
@@ -148,9 +150,234 @@ router.get('/user/:user_id', async (req, res) => {
     console.error(error.message);
     // catches it if the id is incorrect, and returns appropriate error
     if (error.message.indexOf('ObjectId') !== -1) {
-      return res.status(400).json({ msg: 'Profile not found.' });
+      return res.status(404).json({ msg: 'Profile not found.' });
     }
     res.status(500).send('Server Error');
+  }
+});
+
+// @route   Delete /profile
+// @desc    Delete profile, user and posts
+// @access  Private
+
+router.delete('/', auth, async (req, res) => {
+  try {
+    // TODO: remove users posts
+    // remove profile
+    await Profile.findOneAndRemove({ user: req.user.id });
+    // Removes user
+    await User.findOneAndRemove({ _id: req.user.id });
+    res.json({ msg: 'User deleted' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   PUT /profile/experience
+// @desc    Add Profile experience
+// @access  Private
+
+// this can be a post request as well
+router.put(
+  '/experience',
+  [
+    auth,
+    [
+      check('title', 'Title is required')
+        .not()
+        .isEmpty(),
+      check('company', 'Company is required')
+        .not()
+        .isEmpty(),
+      check('from', 'From date is required')
+        .not()
+        .isEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    } = req.body;
+
+    const newExperience = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      // add experience to beginning of array
+      profile.experience.unshift(newExperience);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route   Delete /profile/experience/:exp_id
+// @desc    Delete Profile experience
+// @access  Private
+
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    // Get the remove index
+    const removeIndex = profile.experience
+      .map(item => item.id)
+      .indexOf(req.params.exp_id);
+
+    profile.experience.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (error) {
+    console.error(error.essage);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   PUT /profile/education
+// @desc    Add Profile education
+// @access  Private
+
+// this can be a post request as well
+router.put(
+  '/education',
+  [
+    auth,
+    [
+      check('school', 'School is required')
+        .not()
+        .isEmpty(),
+      check('degree', 'Degree is required')
+        .not()
+        .isEmpty(),
+      check('fieldOfStudy', 'Field of study is required')
+        .not()
+        .isEmpty(),
+      check('from', 'From date is required')
+        .not()
+        .isEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {
+      school,
+      degree,
+      fieldOfStudy,
+      from,
+      to,
+      current,
+      description,
+    } = req.body;
+
+    const newEducation = {
+      school,
+      degree,
+      fieldOfStudy,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      // add experience to beginning of array
+      profile.education.unshift(newEducation);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route   Delete /profile/education/:edu_id
+// @desc    Delete Profile education
+// @access  Private
+
+router.delete('/education/:edu_id', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    // Get the remove index
+    const removeIndex = profile.education
+      .map(item => item.id)
+      .indexOf(req.params.edu_id);
+
+    profile.education.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (error) {
+    console.error(error.essage);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   Delete /profile/github/:username
+// @desc    Get User repos from Github
+// @access  Private
+
+router.get('/github/:username', (req, res) => {
+  try {
+    const options = {
+      uri: `https://api.github.com/users/${
+        req.params.username
+      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
+        'githubClientId'
+      )}&client_secret=${config.get('githubSecret')}`,
+      method: 'GET',
+      headers: { 'user-agent': 'node.js' },
+    };
+
+    request(options, (error, response, body) => {
+      if (error) console.error(error);
+
+      if (response.statusCode !== 200) {
+        return res.status(404).json({ msg: 'No github profile found' });
+      }
+
+      res.json(JSON.parse(body));
+    });
+  } catch (error) {
+    console.error(error.message);
   }
 });
 
