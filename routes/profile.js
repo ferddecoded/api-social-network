@@ -350,7 +350,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
   }
 });
 
-// @route   Delete /profile/github/:username
+// @route   Get /profile/github/:username
 // @desc    Get User repos from Github
 // @access  Private
 
