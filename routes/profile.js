@@ -7,6 +7,7 @@ const router = express.Router();
 
 const Profile = require('../models/Profile');
 const User = require('../models/User');
+const Post = require('../models/Post');
 
 // @route   GET /profile/me
 // @desc    Get current users profile
@@ -78,7 +79,7 @@ router.post(
     if (status) profileFields.status = status;
     if (githubusername) profileFields.githubusername = githubusername;
     if (skills) {
-      profileFields.skills = skills.split(',').map(skill => skill.trim());
+      profileFields.skills = Array.isArray(skills) ? skills : skills.split(',').map(skill => skill.trim());
     }
 
     // Build social object
@@ -161,7 +162,8 @@ router.get('/user/:user_id', async (req, res) => {
 
 router.delete('/', auth, async (req, res) => {
   try {
-    // TODO: remove users posts
+    // Remove user posts
+    await Post.deleteMany({ user: req.user.id });
     // remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     // Removes user
