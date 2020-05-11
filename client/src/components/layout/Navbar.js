@@ -8,6 +8,12 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
   const authLinks = (
     <ul>
       <li>
+        <Link to="/profiles">
+          {/* Span is used to hide text on mobile devices, only show icon */}
+          Developers
+        </Link>
+      </li>
+      <li>
         <Link to="/dashboard">
           <i className="fas fa-user"></i>
           {/* Span is used to hide text on mobile devices, only show icon */}
@@ -25,7 +31,10 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
   const guestLinks = (
     <ul>
       <li>
-        <a href="#!">Developers</a>
+        <Link to="/profiles">
+          {/* Span is used to hide text on mobile devices, only show icon */}
+          Developers
+        </Link>
       </li>
       <li>
         <Link to="/register">Register</Link>
