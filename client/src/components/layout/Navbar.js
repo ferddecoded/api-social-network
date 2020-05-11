@@ -14,6 +14,12 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
         </Link>
       </li>
       <li>
+        <Link to="/posts">
+          {/* Span is used to hide text on mobile devices, only show icon */}
+          Posts
+        </Link>
+      </li>
+      <li>
         <Link to="/dashboard">
           <i className="fas fa-user"></i>
           {/* Span is used to hide text on mobile devices, only show icon */}

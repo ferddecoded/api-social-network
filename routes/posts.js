@@ -71,11 +71,11 @@ router.get('/:post_id', auth, async (req, res) => {
   try {
     const post = await Post.find({ _id: req.params.post_id });
 
-    if (!post) {
+    if (!post.length) {
       return res.status(400).send({ msg: 'Post not found' });
     }
 
-    res.json(post);
+    res.json(post[0]);
   } catch (error) {
     console.log(error.message);
     if (error.message.indexOf('ObjectId') !== -1) {
