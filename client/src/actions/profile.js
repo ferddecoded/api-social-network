@@ -234,8 +234,6 @@ export const deleteEducation = id => async dispatch => {
 };
 
 // Delete Account & profile
-
-// Delete Education
 export const deleteAccount = () => async dispatch => {
   if (window.confirm('Are you sure? This CANNOT be undone!')) {
     try {
