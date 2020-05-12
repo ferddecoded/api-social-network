@@ -1,6 +1,7 @@
 # MERN Social Network App
 
 - an app that allows developers to connect socially
+- to view https://infinite-woodland-89458.herokuapp.com/
 
 ### User
 
