@@ -25,14 +25,15 @@ import store from './store';
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './actions/auth';
 
-// Commenting out for development, unComment when done tutorial
+// set axios headers before app is loaded, if token is present
+// occurs when refreshing page
 if (localStorage.token) {
   setAuthToken(localStorage.token);
 }
 
 const App = () => {
   useEffect(() => {
-    setAuthToken(localStorage.token);
+    // setAuthToken(localStorage.token);
     store.dispatch(loadUser());
   }, []);
   return (
@@ -65,16 +66,8 @@ const App = () => {
               path="/add-education"
               component={AddEducation}
             />
-            <PrivateRoute
-              exact
-              path="/posts"
-              component={Posts}
-            />
-            <PrivateRoute
-              exact
-              path="/posts/:id"
-              component={Post}
-            />
+            <PrivateRoute exact path="/posts" component={Posts} />
+            <PrivateRoute exact path="/posts/:id" component={Post} />
           </Switch>
         </section>
       </Router>

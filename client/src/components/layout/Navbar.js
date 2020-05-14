@@ -21,14 +21,14 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
       </li>
       <li>
         <Link to="/dashboard">
-          <i className="fas fa-user"></i>
+          <i className="fas fa-user" />
           {/* Span is used to hide text on mobile devices, only show icon */}
           <span className="hide-sm">Dashboard</span>
         </Link>
       </li>
       <li>
         <a onClick={logout} href="#!">
-          <i className="fas fa-sign-out-alt"></i>
+          <i className="fas fa-sign-out-alt" />
           <span className="hide-sm">Logout</span>
         </a>
       </li>
@@ -54,7 +54,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
     <nav className="navbar bg-dark">
       <h1>
         <Link to="/">
-          <i className="fas fa-code"></i> DevConnector
+          <i className="fas fa-code" /> DevConnector
         </Link>
         {!loading && <>{isAuthenticated ? authLinks : guestLinks}</>}
       </h1>

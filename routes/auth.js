@@ -2,15 +2,15 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
-const auth = require('../middleware/auth');
 const config = require('config');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 const User = require('../models/User');
 
 // @route   GET /auth
-// @desc    Test route
-// @access  Public
+// @desc    Get user by token
+// @access  Private
 
 // auth is used as a middleware to retrieve jwt token from req and decode it
 router.get('/', auth, async (req, res) => {
