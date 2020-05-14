@@ -1,7 +1,0 @@
-{
-  "MONGO_URI": "mongodb+srv://ferd123:ferd123@devconnector-ole1c.mongodb.net/test?retryWrites=true&w=majority",
-  "JWT_SECRET": "mysecrettoken",
-  "GITHUB_CLIENT_ID": "6fac70fe896edc964416",
-  "GITHUB_SECRET": "a2b14697c6dc6385e76798d2977a19b7c6094462",
-  "SUPPRESS_NO_CONFIG_WARNING": "true"
-}
